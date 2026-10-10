@@ -15,6 +15,12 @@ const envSchema = z.object({
     .min(1)
     .transform((value) => value.split(',').map((origin) => origin.trim())),
   LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace']).default('info'),
+  JWT_ACCESS_SECRET: z
+    .string()
+    .min(32, 'must be at least 32 characters')
+    .refine((value) => !value.startsWith('replace-me'), 'is still the .env.example placeholder'),
+  JWT_ACCESS_TTL_MINUTES: z.coerce.number().int().min(1).max(60).default(15),
+  REFRESH_TOKEN_TTL_DAYS: z.coerce.number().int().min(1).max(90).default(7),
 });
 
 const parsed = envSchema.safeParse(process.env);

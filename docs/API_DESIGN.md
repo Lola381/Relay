@@ -125,8 +125,8 @@ A Member's edits to their own task are limited to `description` and `status`. Ti
 
 | Method | Path | Who | Notes |
 |---|---|---|---|
-| POST | `/auth/login` | Public | Body `{ email, password }` → `{ data: { accessToken, user } }`. Sets refresh token in `httpOnly`, `SameSite` cookie. Deactivated users get 401 `ACCOUNT_DEACTIVATED` |
-| POST | `/auth/refresh` | Cookie | Rotates refresh token, returns new `accessToken` |
+| POST | `/auth/login` | Public | Body `{ email, password }` → `{ data: { accessToken, user } }`. Sets the refresh token in an `httpOnly; SameSite=Lax; Path=/api/v1/auth` cookie. Wrong email or password: 401 `INVALID_CREDENTIALS` (same message for both). Deactivated: 401 `ACCOUNT_DEACTIVATED` (only revealed after a correct password). 10 failed attempts per IP per 15 min: 429 `RATE_LIMITED` + `Retry-After` |
+| POST | `/auth/refresh` | Cookie | Rotates the refresh token and returns `{ data: { accessToken, user } }`. **No cookie → 204** (normal signed-out page load, not an error). Invalid/expired cookie → 401. A token already rotated more than 10 s ago → reuse detected: the whole login family is revoked → 401 |
 | POST | `/auth/logout` | Auth | Revokes refresh token, clears cookie → 204 |
 | GET | `/auth/me` | Auth | Current user + system role |
 
