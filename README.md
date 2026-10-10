@@ -67,7 +67,7 @@ The login page also has one-click demo account buttons.
 | `npm run dev` | API + web together |
 | `npm test` | API test suite (Vitest + Supertest against `pm_test`, rebuilt from migrations on each run) |
 | `npm run check` | Typecheck + lint all workspaces |
-| `scriptsackend-tour.ps1` | PowerShell tour of every API area (CRUD, 401/403/404/400/409, activity, notifications, dashboard) |
+| `scripts\backend-tour.ps1` | PowerShell tour of every API area (CRUD, 401/403/404/400/409, activity, notifications, dashboard) |
 | `npm run demo:api` | Live walkthrough against the running API: 401 / 403 / 404 rejections, a 409 stale update, and SSE delivery |
 | `npm run db:migrate` / `db:seed` / `db:reset` / `db:studio` | Database commands |
 
