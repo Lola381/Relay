@@ -50,6 +50,9 @@ function TaskDetail({ taskId, onClose }: { taskId: string; onClose: () => void }
 
   const [draft, setDraft] = useState<Partial<Pick<Task, 'title' | 'description' | 'priority' | 'dueDate'>>>({});
   const [conflict, setConflict] = useState<string | null>(null);
+  // The version the user started editing from. Live updates refresh the task underneath, but a
+  // save must still be checked against what the user SAW, or someone else's change is overwritten.
+  const [baseVersion, setBaseVersion] = useState<number | null>(null);
   const [body, setBody] = useState('');
 
   const refresh = () => {
@@ -60,6 +63,7 @@ function TaskDetail({ taskId, onClose }: { taskId: string; onClose: () => void }
   const onWriteError = (err: unknown) => {
     if (err instanceof ApiError && err.code === ERROR_CODES.VERSION_CONFLICT) {
       setConflict(err.message);
+      setBaseVersion(null); // the next save is a deliberate re-apply on top of the latest version
       refresh();
     } else if (err instanceof ApiError && err.code === ERROR_CODES.TASK_DELETED) {
       toast.error('This task has been deleted.');
@@ -74,6 +78,7 @@ function TaskDetail({ taskId, onClose }: { taskId: string; onClose: () => void }
     onSuccess: () => {
       toast.success('Task saved');
       setDraft({});
+      setBaseVersion(null);
       setConflict(null);
       refresh();
     },
@@ -110,6 +115,10 @@ function TaskDetail({ taskId, onClose }: { taskId: string; onClose: () => void }
   const roster = members.data?.data ?? [];
   const assignable = roster.filter((m) => m.role !== 'VIEWER' && m.user.isActive);
   const dirty = Object.keys(draft).length > 0;
+  const edit = (patch: typeof draft) => {
+    setBaseVersion((v) => v ?? t.version);
+    setDraft((d) => ({ ...d, ...patch }));
+  };
   const value = <K extends keyof typeof draft>(key: K) => (key in draft ? draft[key] : t[key]);
 
   return (
@@ -126,7 +135,7 @@ function TaskDetail({ taskId, onClose }: { taskId: string; onClose: () => void }
         <input
           value={value('title') ?? ''}
           disabled={!canDetails}
-          onChange={(e) => setDraft((d) => ({ ...d, title: e.target.value }))}
+          onChange={(e) => edit({ title: e.target.value })}
           className={inputClass()}
         />
       </label>
@@ -137,7 +146,7 @@ function TaskDetail({ taskId, onClose }: { taskId: string; onClose: () => void }
           <select
             value={value('priority') as TaskPriority}
             disabled={!canDetails}
-            onChange={(e) => setDraft((d) => ({ ...d, priority: e.target.value as TaskPriority }))}
+            onChange={(e) => edit({ priority: e.target.value as TaskPriority })}
             className={inputClass()}
           >
             {TASK_PRIORITIES.map((p) => (
@@ -151,7 +160,7 @@ function TaskDetail({ taskId, onClose }: { taskId: string; onClose: () => void }
             type="date"
             value={value('dueDate') ?? ''}
             disabled={!canDetails}
-            onChange={(e) => setDraft((d) => ({ ...d, dueDate: e.target.value || null }))}
+            onChange={(e) => edit({ dueDate: e.target.value || null })}
             className={inputClass()}
           />
         </label>
@@ -163,13 +172,13 @@ function TaskDetail({ taskId, onClose }: { taskId: string; onClose: () => void }
           rows={4}
           value={value('description') ?? ''}
           disabled={!canDescription}
-          onChange={(e) => setDraft((d) => ({ ...d, description: e.target.value }))}
+          onChange={(e) => edit({ description: e.target.value })}
           className={inputClass()}
         />
       </label>
 
       {(canDetails || canDescription) && (
-        <button className={btn.primary} disabled={!dirty || save.isPending} onClick={() => save.mutate(t.version)}>
+        <button className={btn.primary} disabled={!dirty || save.isPending} onClick={() => save.mutate(baseVersion ?? t.version)}>
           {save.isPending ? 'Saving…' : 'Save changes'}
         </button>
       )}
