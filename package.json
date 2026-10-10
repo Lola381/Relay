@@ -17,12 +17,14 @@
     "typecheck": "npm run typecheck --workspaces --if-present",
     "lint": "eslint apps/api packages/shared && npm run lint -w @pm/web",
     "format": "prettier --write .",
-    "check": "npm run typecheck && npm run lint"
+    "check": "npm run typecheck && npm run lint",
+    "db:setup-local": "node scripts/setup-local-db.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "concurrently": "^10.0.6",
     "eslint": "^10.12.0",
+    "pg": "^8.23.1",
     "prettier": "^3.9.9",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.71.1"
