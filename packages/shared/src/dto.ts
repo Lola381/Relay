@@ -1,5 +1,13 @@
 // Response envelopes and DTOs (see docs/API_DESIGN.md §1, §3).
-import type { ProjectRole, ProjectStatus, SystemRole, TaskStatus } from './enums';
+import type {
+  ActivityAction,
+  ActivityEntityType,
+  ProjectRole,
+  ProjectStatus,
+  SystemRole,
+  TaskPriority,
+  TaskStatus,
+} from './enums';
 import type { ErrorCode } from './errors';
 
 /** Minimal person reference used inside other resources. */
@@ -41,6 +49,49 @@ export interface Project {
   createdAt: string;
   updatedAt: string;
   archivedAt: string | null;
+}
+
+export interface Task {
+  id: string;
+  projectId: string;
+  projectName: string;
+  title: string;
+  description: string | null;
+  status: TaskStatus;
+  priority: TaskPriority;
+  assignee: (UserRef & { isActive: boolean }) | null;
+  /** "YYYY-MM-DD" */
+  dueDate: string | null;
+  isOverdue: boolean;
+  completedAt: string | null;
+  version: number;
+  commentCount: number;
+  createdBy: UserRef;
+  updatedBy: UserRef;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Comment {
+  id: string;
+  taskId: string;
+  projectId: string;
+  author: UserRef & { isActive: boolean };
+  /** May contain mention tokens: @[Name](userId) */
+  body: string;
+  mentions: UserRef[];
+  createdAt: string;
+}
+
+export interface ActivityEntry {
+  id: string;
+  projectId: string | null;
+  actor: UserRef | null;
+  action: ActivityAction;
+  entityType: ActivityEntityType;
+  entityId: string;
+  metadata: Record<string, unknown>;
+  createdAt: string;
 }
 
 export interface ProjectMember {

@@ -48,6 +48,7 @@ export default function ProjectLayout({ children }: { children: React.ReactNode 
           <Pivot
             items={[
               { href: base, label: 'Overview', exact: true },
+              { href: `${base}/tasks`, label: 'Tasks' },
               { href: `${base}/team`, label: 'Team' },
             ]}
           />

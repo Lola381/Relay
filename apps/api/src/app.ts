@@ -11,6 +11,7 @@ import { authRouter } from './modules/auth/auth.routes';
 import { healthRouter } from './modules/health/health.routes';
 import { projectsRouter } from './modules/projects/projects.routes';
 import { usersRouter } from './modules/users/users.routes';
+import { tasksRouter } from './modules/tasks/tasks.routes';
 
 export function createApp() {
   const app = express();
@@ -43,6 +44,7 @@ export function createApp() {
   api.use('/auth', authRouter);
   api.use('/projects', projectsRouter);
   api.use('/users', usersRouter);
+  api.use('/', tasksRouter);
   app.use('/api/v1', api);
 
   app.use(notFoundHandler);
