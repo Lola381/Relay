@@ -124,6 +124,7 @@ export async function seed(db: Db): Promise<string> {
       const [row] = await tx
         .insert(projects)
         .values({
+          id: fixture.id,
           name: fixture.name,
           description: fixture.description,
           status: archivedAt ? 'ARCHIVED' : 'ACTIVE',

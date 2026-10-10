@@ -38,6 +38,8 @@ export const USERS: UserFixture[] = [
 
 export interface ProjectFixture {
   key: ProjectKey;
+  /** Fixed ids: open pages and bookmarks keep working after `db:reset`. */
+  id: string;
   name: string;
   description: string;
   createdDaysAgo: number;
@@ -48,6 +50,7 @@ export interface ProjectFixture {
 export const PROJECTS: ProjectFixture[] = [
   {
     key: 'website',
+    id: '00000000-0000-4000-9000-000000000001',
     name: 'Website Revamp',
     description:
       'Redesign and rebuild the marketing website: new homepage, responsive navigation, ' +
@@ -65,6 +68,7 @@ export const PROJECTS: ProjectFixture[] = [
   },
   {
     key: 'mobile',
+    id: '00000000-0000-4000-9000-000000000002',
     name: 'Mobile App',
     description: 'First release of the customer mobile app (iOS + Android) with login and push notifications.',
     createdDaysAgo: 20,
@@ -75,6 +79,7 @@ export const PROJECTS: ProjectFixture[] = [
   },
   {
     key: 'crm',
+    id: '00000000-0000-4000-9000-000000000003',
     name: 'Legacy CRM',
     description: 'Retire the old CRM: export customer data and decommission the server.',
     createdDaysAgo: 80,
