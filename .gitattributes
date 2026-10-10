@@ -1,0 +1,9 @@
+# Consistent LF line endings in the repo regardless of OS
+* text=auto eol=lf
+
+# Never touch binary files
+*.pdf binary
+*.png binary
+*.jpg binary
+*.ico binary
+*.woff2 binary

@@ -1,0 +1,30 @@
+{
+  "name": "neostats-pm",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Collaborative project management platform (NeoStats Full Stack Hackathon)",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "concurrently -k -n api,web -c cyan,magenta \"npm run dev -w @pm/api\" \"npm run dev -w @pm/web\"",
+    "db:up": "docker compose up -d --wait",
+    "db:down": "docker compose down",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "lint": "eslint apps/api packages/shared && npm run lint -w @pm/web",
+    "format": "prettier --write .",
+    "check": "npm run typecheck && npm run lint"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "concurrently": "^10.0.6",
+    "eslint": "^10.12.0",
+    "prettier": "^3.9.9",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.71.1"
+  }
+}

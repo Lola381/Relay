@@ -1,0 +1,16 @@
+{
+  "name": "@pm/shared",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Types, enums, Zod schemas and permission rules shared by the API and the web app",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "zod": "^4.6.5"
+  }
+}
