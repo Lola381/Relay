@@ -24,7 +24,8 @@
     "db:seed": "npm run db:seed -w @pm/api",
     "db:reset": "npm run db:reset -w @pm/api",
     "db:studio": "npm run db:studio -w @pm/api",
-    "test": "npm run test -w @pm/api"
+    "test": "npm run test -w @pm/api",
+    "demo:api": "node scripts/demo-api.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
