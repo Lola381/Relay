@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
+import Link from 'next/link';
 import { BoardRegular } from '@/components/icons';
 import { FlyingDots } from '@/components/metro/FlyingDots';
 import { LoginForm } from './LoginForm';
@@ -43,6 +44,12 @@ export default function LoginPage() {
           <Suspense fallback={<FlyingDots label="Loading sign-in form" />}>
             <LoginForm />
           </Suspense>
+          <p className="mt-8 text-muted">
+            New here?{' '}
+            <Link href="/signup" className="text-accent-text underline-offset-4 hover:underline">
+              Create an account
+            </Link>
+          </p>
         </div>
       </section>
     </main>

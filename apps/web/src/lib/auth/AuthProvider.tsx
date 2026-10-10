@@ -2,7 +2,7 @@
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import { ERROR_CODES, type ApiResponse, type AuthSession, type AuthUser, type LoginInput } from '@pm/shared';
+import { ERROR_CODES, type ApiResponse, type AuthSession, type AuthUser, type LoginInput, type RegisterInput } from '@pm/shared';
 import {
   api,
   NETWORK_ERROR,
@@ -23,6 +23,7 @@ type AuthState =
 interface AuthContextValue {
   state: AuthState;
   login: (input: LoginInput) => Promise<void>;
+  register: (input: RegisterInput) => Promise<void>;
   logout: () => Promise<void>;
   retry: () => void;
 }
@@ -67,6 +68,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setState({ status: 'authenticated', user: data.user });
   }, []);
 
+  const register = useCallback(async (input: RegisterInput) => {
+    const { data } = await api<ApiResponse<AuthSession>>('/auth/register', {
+      method: 'POST',
+      body: input,
+      auth: false,
+    });
+    setAccessToken(data.accessToken);
+    setState({ status: 'authenticated', user: data.user });
+  }, []);
+
   const logout = useCallback(async () => {
     try {
       await api('/auth/logout', { method: 'POST', auth: false });
@@ -83,7 +94,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     restore();
   }, [restore]);
 
-  const value = useMemo(() => ({ state, login, logout, retry }), [state, login, logout, retry]);
+  const value = useMemo(() => ({ state, login, register, logout, retry }), [state, login, register, logout, retry]);
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 

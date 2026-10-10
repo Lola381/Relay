@@ -1,10 +1,11 @@
 import { Router } from 'express';
-import { loginSchema, type ApiResponse, type AuthSession, type AuthUser } from '@pm/shared';
+import { loginSchema, registerSchema, type ApiResponse, type AuthSession, type AuthUser } from '@pm/shared';
 import { authenticate, currentUser } from '../../middleware/authenticate';
 import { loginRateLimit } from '../../middleware/rateLimit';
 import { clearRefreshCookie, readRefreshCookie, setRefreshCookie } from '../../lib/cookies';
 import { parse } from '../../lib/validation';
 import * as authService from './auth.service';
+import { registerUser } from '../users/users.service';
 
 export const authRouter = Router();
 
@@ -14,6 +15,21 @@ authRouter.post('/login', loginRateLimit, async (req, res) => {
   const { session, refreshToken } = await authService.login(input, req.get('user-agent'));
   setRefreshCookie(res, refreshToken);
   res.json({ data: session } satisfies ApiResponse<AuthSession>);
+});
+
+/**
+ * Self-service sign-up as Project Manager, Team Member or Viewer (never Admin), then signs the
+ * new user straight in. New users belong to no project until a manager or admin adds them.
+ */
+authRouter.post('/register', loginRateLimit, async (req, res) => {
+  const input = parse(registerSchema, req.body);
+  await registerUser(input);
+  const { session, refreshToken } = await authService.login(
+    { email: input.email, password: input.password },
+    req.get('user-agent'),
+  );
+  setRefreshCookie(res, refreshToken);
+  res.status(201).json({ data: session } satisfies ApiResponse<AuthSession>);
 });
 
 /**

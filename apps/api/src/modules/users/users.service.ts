@@ -83,6 +83,23 @@ export async function createUser(
   input: { name: string; email: string; password: string; role: SystemRole },
 ): Promise<UserSummary> {
   assertSystemCan({ userId: admin.id, systemRole: admin.role }, 'user.manage');
+  return insertUser(admin.id, input);
+}
+
+/** Public sign-up (POST /auth/register). The schema already rules out ADMIN. */
+export async function registerUser(input: {
+  name: string;
+  email: string;
+  password: string;
+  role: Exclude<SystemRole, 'ADMIN'>;
+}): Promise<UserSummary> {
+  return insertUser(null, input);
+}
+
+async function insertUser(
+  actorId: string | null,
+  input: { name: string; email: string; password: string; role: SystemRole },
+): Promise<UserSummary> {
   const passwordHash = await hashPassword(input.password);
   return withTransaction(async (tx, emit) => {
     const [taken] = await tx.select({ id: users.id }).from(users).where(sql`lower(${users.email}) = ${input.email}`);
@@ -96,12 +113,12 @@ export async function createUser(
       .values({ name: input.name, email: input.email, passwordHash, role: input.role })
       .returning();
     await logActivity(tx, emit, {
-      actorId: admin.id,
+      actorId,
       projectId: null,
       action: 'USER_CREATED',
       entityType: 'USER',
       entityId: row!.id,
-      metadata: { userName: row!.name, role: row!.role },
+      metadata: { userName: row!.name, role: row!.role, selfSignup: actorId === null },
     });
     return summary(row!);
   });
