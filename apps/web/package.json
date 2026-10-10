@@ -10,7 +10,6 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "@next/env": "^16.4.0",
     "@pm/shared": "*",
     "next": "^16.4.0",
     "react": "^19.3.0",

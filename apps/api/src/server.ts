@@ -1,9 +1,14 @@
+import { createServer } from 'node:http';
 import { createApp } from './app';
 import { env } from './config/env';
 import { pool } from './db/client';
 import { logger } from './lib/logger';
 
-const server = createApp().listen(env.API_PORT, () => {
+// Plain http server instead of app.listen(): in Express 5 the listen callback also fires on
+// errors, which would log "listening" right before a port-in-use failure.
+const server = createServer(createApp());
+
+server.on('listening', () => {
   logger.info(`API listening on http://localhost:${env.API_PORT}/api/v1`);
 });
 
@@ -15,6 +20,8 @@ server.on('error', (err: NodeJS.ErrnoException) => {
   }
   process.exit(1);
 });
+
+server.listen(env.API_PORT);
 
 // Graceful shutdown: stop accepting connections, then release the DB pool.
 // (Long-lived SSE streams will be closed here too once the realtime hub exists.)
