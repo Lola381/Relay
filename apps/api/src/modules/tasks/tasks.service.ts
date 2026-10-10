@@ -98,7 +98,7 @@ export async function myTasks(
 }
 
 /** Project access for a task (404 for outsiders, exactly like a missing task). */
-async function accessForTask(executor: typeof db | Tx, user: AuthUser, taskId: string, lock: 'none' | 'share' = 'none') {
+export async function accessForTask(executor: typeof db | Tx, user: AuthUser, taskId: string, lock: 'none' | 'share' = 'none') {
   const [row] = await executor.select({ projectId: tasks.projectId }).from(tasks).where(eq(tasks.id, taskId));
   if (!row) throw notFound('Task not found.');
   try {

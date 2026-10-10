@@ -5,17 +5,23 @@ import { usePathname, useRouter } from 'next/navigation';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { ArrowLeftRegular, ChevronDownRegular, SignOutRegular } from '@/components/icons';
 import { Avatar } from '@/components/metro/Avatar';
+import { NotificationBell } from '@/components/shell/NotificationBell';
+import type { LiveStatus } from '@/lib/live/useLiveEvents';
 import { useAuth, useCurrentUser } from '@/lib/auth/AuthProvider';
 import { roleLabel } from '@/lib/format';
 
-const NAV = [
+const BASE_NAV = [
   { href: '/dashboard', label: 'Start' },
   { href: '/projects', label: 'Projects' },
 ];
+const ADMIN_NAV = [...BASE_NAV, { href: '/users', label: 'Users' }, { href: '/activity', label: 'Activity' }];
+
+const LIVE_LABEL: Record<LiveStatus, string> = { live: 'Live', connecting: 'Connecting…', offline: 'Offline' };
 
 /** Thin Metro top bar: back, brand, sections, and the user tile with its menu. */
-export function TopBar() {
+export function TopBar({ live }: { live: LiveStatus }) {
   const user = useCurrentUser();
+  const NAV = user.role === 'ADMIN' ? ADMIN_NAV : BASE_NAV;
   const { logout } = useAuth();
   const pathname = usePathname();
   const router = useRouter();
@@ -50,8 +56,17 @@ export function TopBar() {
         ))}
       </nav>
 
+      <span
+        className="ml-auto hidden items-center gap-1.5 text-xs text-muted md:flex"
+        title="Real-time updates"
+        aria-live="polite"
+      >
+        <span className={`size-2 rounded-full ${live === 'live' ? 'bg-tile-work' : live === 'offline' ? 'bg-tile-alert' : 'bg-muted'}`} />
+        {LIVE_LABEL[live]}
+      </span>
+      <NotificationBell />
       <DropdownMenu.Root>
-        <DropdownMenu.Trigger className="ml-auto flex items-center gap-3 py-2">
+        <DropdownMenu.Trigger className="flex items-center gap-3 py-2">
           <Avatar name={user.name} url={user.avatarUrl} />
           <span className="hidden text-[17px] sm:inline">{user.name}</span>
           <ChevronDownRegular aria-hidden fontSize={14} />

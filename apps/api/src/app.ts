@@ -12,6 +12,10 @@ import { healthRouter } from './modules/health/health.routes';
 import { projectsRouter } from './modules/projects/projects.routes';
 import { usersRouter } from './modules/users/users.routes';
 import { tasksRouter } from './modules/tasks/tasks.routes';
+import { commentsRouter } from './modules/comments/comments.routes';
+import { notificationsRouter } from './modules/notifications/notifications.routes';
+import { activityRouter } from './modules/activity/activity.routes';
+import { eventsRouter } from './modules/events/events.routes';
 
 export function createApp() {
   const app = express();
@@ -44,7 +48,11 @@ export function createApp() {
   api.use('/auth', authRouter);
   api.use('/projects', projectsRouter);
   api.use('/users', usersRouter);
+  api.use('/events', eventsRouter);
+  api.use('/notifications', notificationsRouter);
   api.use('/', tasksRouter);
+  api.use('/', commentsRouter);
+  api.use('/', activityRouter);
   app.use('/api/v1', api);
 
   app.use(notFoundHandler);

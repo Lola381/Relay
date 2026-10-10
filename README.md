@@ -81,9 +81,18 @@ The login page also has one-click demo account buttons.
 - **Activity log and notifications:** both are written in the same transaction as the change.
 - **Tests:** 265 API tests covering the whole permission matrix, auth, access, conflicts, members and projects.
 
-**Not finished (time ran out)**
-- Real-time push (SSE): designed in [API_DESIGN §6](docs/API_DESIGN.md). Events are already queued after commit (`apps/api/src/lib/events.ts`) but no stream endpoint exists yet, so other users currently need a refresh.
-- Comments and @mentions (schema, mention parsing and seed data exist; no API/UI), the notifications UI, the activity feed pages, the Start dashboard tiles and the Users admin page.
+- **Real-time (SSE):** `GET /events` with single-use ticket auth; boards, comments, activity, dashboard and the notification badge update live across browsers (a "Live" dot in the top bar shows the connection).
+- **Comments and @mentions:** task detail pane with comments; mentions notify the person.
+- **Notifications:** bell with unread badge, mark read / mark all read, links to the task.
+- **Activity feeds:** a per-project Activity tab, plus a system-wide feed for admins.
+- **Start dashboard:** Metro tiles for my tasks, projects and notifications (plus Users/Activity for admins).
+- **Users admin:** create users, change system roles (role-ceiling and last-admin guards), deactivate (revokes sessions) / reactivate.
+
+**Known gaps**
+- The new endpoints (comments, notifications, activity, users, events) were smoke-tested end to end but don't have dedicated Vitest suites yet.
+- No `Last-Event-ID` replay: a client that reconnects refetches its data instead.
+
+**Demo script:** open two browsers, pm@demo.com and alice@demo.com. As pm, open Website Revamp → Tasks, open a task assigned to Alice and post a comment that @mentions her: her bell, board and activity update instantly. Then have both edit the same task: the second save gets a 409 naming who changed it.
 
 ## AI usage
 Built with Claude Code as a pair programmer. The architecture and trade-offs (SSE with ticket auth, the composite assignee FK, row-lock ordering, refresh-token rotation with a grace window, and the shared permission rulebook) were discussed and decided step by step and are documented in `docs/`. Every change was type-checked, tested and reviewed before committing.

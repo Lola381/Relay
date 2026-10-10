@@ -50,6 +50,7 @@ export default function ProjectLayout({ children }: { children: React.ReactNode 
               { href: base, label: 'Overview', exact: true },
               { href: `${base}/tasks`, label: 'Tasks' },
               { href: `${base}/team`, label: 'Team' },
+              { href: `${base}/activity`, label: 'Activity' },
             ]}
           />
         </div>

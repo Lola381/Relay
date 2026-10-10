@@ -5,6 +5,8 @@ import { usePathname, useRouter } from 'next/navigation';
 import { FullScreenStatus } from '@/components/metro/FullScreenStatus';
 import { TopBar } from '@/components/shell/TopBar';
 import { useAuth } from '@/lib/auth/AuthProvider';
+import { useLiveEvents } from '@/lib/live/useLiveEvents';
+import type { AuthUser } from '@pm/shared';
 
 /**
  * Everything under (app) requires a session. This guard is UX only: the API enforces
@@ -43,9 +45,15 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     return <FullScreenStatus loading title="Opening your workspace" />;
   }
 
+  return <SignedInShell user={state.user}>{children}</SignedInShell>;
+}
+
+/** Mounted only with a session, so the live stream connects once signed in. */
+function SignedInShell({ user, children }: { user: AuthUser; children: React.ReactNode }) {
+  const live = useLiveEvents(user.id);
   return (
     <div className="flex min-h-screen flex-col">
-      <TopBar />
+      <TopBar live={live} />
       {/* Bottom padding keeps content clear of the fixed app bar */}
       <div className="flex-1 pb-32">{children}</div>
     </div>

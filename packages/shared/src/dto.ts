@@ -2,6 +2,8 @@
 import type {
   ActivityAction,
   ActivityEntityType,
+  NotificationEntityType,
+  NotificationType,
   ProjectRole,
   ProjectStatus,
   SystemRole,
@@ -146,4 +148,29 @@ export interface HealthStatus {
   status: 'ok' | 'degraded';
   db: 'ok' | 'down';
   uptimeSeconds: number;
+}
+
+export interface Notification {
+  id: string;
+  type: NotificationType;
+  actor: UserRef | null;
+  projectId: string | null;
+  entityType: NotificationEntityType;
+  entityId: string;
+  /** Snapshot: actorName, projectName, taskTitle, role, from/to… */
+  metadata: Record<string, unknown>;
+  readAt: string | null;
+  createdAt: string;
+}
+
+export interface NotificationPage extends Paginated<Notification> {
+  unreadCount: number;
+}
+
+/** A real-time message on GET /events (Server-Sent Events). */
+export interface LiveEvent {
+  type: string;
+  projectId?: string;
+  actorId?: string;
+  data: unknown;
 }

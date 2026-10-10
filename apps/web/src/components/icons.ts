@@ -4,6 +4,9 @@
 // 'use client' module lets server components render them too. Add new icons here.
 export {
   AddRegular,
+  AlertRegular,
+  ChatRegular,
+  SendRegular,
   ArchiveArrowBackRegular,
   ArchiveRegular,
   ArrowCounterclockwiseRegular,

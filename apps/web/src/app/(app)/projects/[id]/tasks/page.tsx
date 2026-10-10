@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import {
@@ -15,6 +16,7 @@ import {
 } from '@pm/shared';
 import { AddRegular, DeleteRegular } from '@/components/icons';
 import { useProjectContext } from '@/components/features/projects/ProjectContext';
+import { TaskDetailPane } from '@/components/features/tasks/TaskDetailPane';
 import { AppBar } from '@/components/metro/AppBar';
 import { ConfirmBand } from '@/components/metro/ConfirmBand';
 import { SidePane } from '@/components/metro/SidePane';
@@ -41,6 +43,12 @@ export default function TaskBoardPage() {
   const [conflict, setConflict] = useState<Conflict | null>(null);
   const [creating, setCreating] = useState(false);
   const [deleting, setDeleting] = useState<Task | null>(null);
+  // ?task=<id> opens the detail pane (links from notifications land here)
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
+  const openTaskId = searchParams.get('task');
+  const openTask = (id: string | null) => router.replace(id ? `${pathname}?task=${id}` : pathname, { scroll: false });
 
   const refresh = () => {
     void queryClient.invalidateQueries({ queryKey: key });
@@ -95,7 +103,13 @@ export default function TaskBoardPage() {
                   return (
                     <li key={task.id} className="flex min-h-[204px] flex-col bg-tile-work p-4 text-white">
                       <p className="text-xs tracking-wide uppercase">{task.priority}</p>
-                      <p className="mt-2 text-[22px] leading-tight font-light">{task.title}</p>
+                      <button
+                        type="button"
+                        onClick={() => openTask(task.id)}
+                        className="mt-2 text-left text-[22px] leading-tight font-light hover:underline"
+                      >
+                        {task.title}
+                      </button>
                       <p className="mt-2 text-sm">
                         {task.assignee ? task.assignee.name : 'Unassigned'}
                         {task.assignee?.id === user.id && ' · Mine'}
@@ -104,6 +118,7 @@ export default function TaskBoardPage() {
                       <p className="text-sm">
                         {task.dueDate ?? 'No due date'}
                         {task.isOverdue && ' · overdue'}
+                        {task.commentCount > 0 && ` · ${task.commentCount} comment${task.commentCount === 1 ? '' : 's'}`}
                       </p>
                       <div className="mt-auto flex items-center gap-2 pt-3">
                         <label className="sr-only" htmlFor={`status-${task.id}`}>
@@ -147,6 +162,8 @@ export default function TaskBoardPage() {
 
       {canCreate && <AppBar actions={[{ label: 'New task', icon: <AddRegular />, onClick: () => setCreating(true) }]} />}
       {canCreate && <CreateTaskPane open={creating} onOpenChange={setCreating} onCreated={refresh} />}
+
+      <TaskDetailPane taskId={openTaskId} onClose={() => openTask(null)} />
 
       <ConfirmBand
         open={conflict !== null}
