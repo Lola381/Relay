@@ -37,7 +37,9 @@ describe('GET /projects/:id/members', () => {
       'MANAGER Ravi Kumar',
       'MEMBER Alice Fernandes',
       'MEMBER Bob Mathew',
+      'MEMBER Carol Dsouza',
       'MEMBER Ishaan Verma',
+      'VIEWER Meera Iyer',
       'VIEWER Vikram Rao',
     ]);
     const alice = res.body.data.find((m: { user: { name: string } }) => m.user.name === 'Alice Fernandes');
@@ -205,14 +207,14 @@ describe('DELETE /projects/:id/members/:userId', () => {
 describe('GET /users (picker directory)', () => {
   it('admins see everyone, including deactivated users', async () => {
     const res = await api().get('/api/v1/users').set('Authorization', await bearer('admin'));
-    expect(res.body.meta.total).toBe(6);
+    expect(res.body.meta.total).toBe(8);
     expect(JSON.stringify(res.body)).not.toMatch(/password/i);
   });
 
   it('project managers only ever see active users', async () => {
     const res = await api().get('/api/v1/users?isActive=false').set('Authorization', await bearer('pm'));
     expect(res.body.data.every((u: { isActive: boolean }) => u.isActive)).toBe(true);
-    expect(res.body.meta.total).toBe(5);
+    expect(res.body.meta.total).toBe(7);
   });
 
   it('members and viewers cannot browse users', async () => {
@@ -224,7 +226,7 @@ describe('GET /users (picker directory)', () => {
   it('notInProject + roles filters power the pickers', async () => {
     const { mobile } = await ids();
     const res = await api().get(`/api/v1/users?notInProject=${mobile}&sort=name`).set('Authorization', await bearer('pm'));
-    expect(res.body.data.map((u: { name: string }) => u.name)).toEqual(['Alice Fernandes', 'Neha Kapoor', 'Vikram Rao']);
+    expect(res.body.data.map((u: { name: string }) => u.name)).toEqual(['Alice Fernandes', 'Carol Dsouza', 'Meera Iyer', 'Neha Kapoor', 'Vikram Rao']);
     const managers = await api().get('/api/v1/users?roles=ADMIN,PROJECT_MANAGER').set('Authorization', await bearer('admin'));
     expect(managers.body.data.map((u: { role: string }) => u.role).sort()).toEqual(['ADMIN', 'PROJECT_MANAGER']);
   });

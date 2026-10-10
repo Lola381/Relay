@@ -65,7 +65,7 @@ describe('GET /projects', () => {
     expect(website.myRole).toBe('MEMBER');
     expect(website.managers.map((m: { name: string }) => m.name)).toEqual(['Ravi Kumar']);
     expect(website.stats).toEqual({
-      memberCount: 5,
+      memberCount: 7,
       taskCount: 8,
       taskCounts: { TODO: 4, IN_PROGRESS: 2, IN_REVIEW: 1, DONE: 1 },
       overdueCount: 2, // "About page" (in review) and "Contact form" are past due
@@ -268,9 +268,9 @@ describe('DELETE /projects/:id', () => {
       .select()
       .from(activityLogs)
       .where(and(eq(activityLogs.action, 'PROJECT_DELETED'), isNull(activityLogs.projectId)));
-    expect(record!.metadata).toMatchObject({ projectName: 'Website Revamp', taskCount: 8, commentCount: 3, memberCount: 5 });
+    expect(record!.metadata).toMatchObject({ projectName: 'Website Revamp', taskCount: 8, commentCount: 3, memberCount: 7 });
 
     const deleted = events.find((e) => e.type === 'project.deleted');
-    expect(deleted?.userIds).toHaveLength(5);
+    expect(deleted?.userIds).toHaveLength(7);
   });
 });

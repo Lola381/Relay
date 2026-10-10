@@ -4,7 +4,7 @@ import type { ProjectRole, SystemRole, TaskPriority, TaskStatus } from '@pm/shar
 
 export const DEMO_PASSWORD = 'Password123!';
 
-export type UserKey = 'admin' | 'pm' | 'alice' | 'bob' | 'viewer' | 'ishaan';
+export type UserKey = 'admin' | 'pm' | 'alice' | 'bob' | 'carol' | 'viewer' | 'meera' | 'ishaan';
 export type ProjectKey = 'website' | 'mobile' | 'crm';
 
 export interface UserFixture {
@@ -23,6 +23,8 @@ export const USERS: UserFixture[] = [
   { key: 'alice', id: '00000000-0000-4000-8000-000000000003', name: 'Alice Fernandes', email: 'alice@demo.com', role: 'TEAM_MEMBER' },
   { key: 'bob', id: '00000000-0000-4000-8000-000000000004', name: 'Bob Mathew', email: 'bob@demo.com', role: 'TEAM_MEMBER' },
   { key: 'viewer', id: '00000000-0000-4000-8000-000000000005', name: 'Vikram Rao', email: 'viewer@demo.com', role: 'VIEWER' },
+  { key: 'carol', id: '00000000-0000-4000-8000-000000000007', name: 'Carol Dsouza', email: 'carol@demo.com', role: 'TEAM_MEMBER' },
+  { key: 'meera', id: '00000000-0000-4000-8000-000000000008', name: 'Meera Iyer', email: 'meera@demo.com', role: 'VIEWER' },
   // Deactivated: shows the "deactivated user" badges and can't log in
   {
     key: 'ishaan',
@@ -57,6 +59,8 @@ export const PROJECTS: ProjectFixture[] = [
       { user: 'bob', role: 'MEMBER' },
       { user: 'viewer', role: 'VIEWER' },
       { user: 'ishaan', role: 'MEMBER' },
+      { user: 'carol', role: 'MEMBER' },
+      { user: 'meera', role: 'VIEWER' },
     ],
   },
   {

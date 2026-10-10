@@ -182,6 +182,7 @@ export function LoginForm() {
                 <span className="min-w-0 flex-1">
                   <span className="block truncate">{account.name}</span>
                   <span className="block truncate text-xs text-muted">{account.email}</span>
+                  <span className="block truncate text-xs text-muted">{account.projects}</span>
                 </span>
                 <ArrowRightRegular aria-hidden fontSize={18} />
                 <span className="sr-only">Fill in the {account.role} demo account</span>
@@ -189,7 +190,9 @@ export function LoginForm() {
             </li>
           ))}
         </ul>
-        <p className="mt-4 text-sm text-muted">Demo password: {DEMO_PASSWORD}</p>
+        <p className="mt-4 text-sm text-muted">
+          Demo password for all accounts: {DEMO_PASSWORD} · inactive@demo.com is deactivated and cannot sign in.
+        </p>
       </section>
     </>
   );

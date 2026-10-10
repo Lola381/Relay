@@ -54,8 +54,8 @@ Open http://localhost:3000. `npm run db:reset` rebuilds the database from scratc
 |---|---|
 | Admin | admin@demo.com |
 | Project manager | pm@demo.com |
-| Team member | alice@demo.com, bob@demo.com |
-| Viewer | viewer@demo.com |
+| Team member | alice@demo.com, bob@demo.com, carol@demo.com |
+| Viewer | viewer@demo.com, meera@demo.com |
 | Deactivated (cannot log in) | inactive@demo.com |
 
 The login page also has one-click demo account buttons.
