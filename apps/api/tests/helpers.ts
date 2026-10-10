@@ -21,6 +21,8 @@ export const DEMO = {
   alice: 'alice@demo.com',
   bob: 'bob@demo.com',
   viewer: 'viewer@demo.com',
+  carol: 'carol@demo.com',
+  meera: 'meera@demo.com',
   inactive: 'inactive@demo.com',
 } as const;
 export type DemoUser = keyof typeof DEMO;
