@@ -30,6 +30,9 @@ export const projects = pgTable(
     createdBy: uuid('created_by')
       .notNull()
       .references(() => users.id),
+    updatedBy: uuid('updated_by') // who made the last change (named in the 409 conflict message)
+      .notNull()
+      .references(() => users.id),
     archivedAt: tstz('archived_at'),
     archivedBy: uuid('archived_by').references(() => users.id),
     createdAt: createdAt(),

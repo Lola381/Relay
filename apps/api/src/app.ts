@@ -9,6 +9,8 @@ import { logger } from './lib/logger';
 import { errorHandler, notFoundHandler } from './middleware/errorHandler';
 import { authRouter } from './modules/auth/auth.routes';
 import { healthRouter } from './modules/health/health.routes';
+import { projectsRouter } from './modules/projects/projects.routes';
+import { usersRouter } from './modules/users/users.routes';
 
 export function createApp() {
   const app = express();
@@ -39,6 +41,8 @@ export function createApp() {
   const api = express.Router();
   api.use('/health', healthRouter);
   api.use('/auth', authRouter);
+  api.use('/projects', projectsRouter);
+  api.use('/users', usersRouter);
   app.use('/api/v1', api);
 
   app.use(notFoundHandler);

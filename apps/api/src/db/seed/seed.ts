@@ -38,8 +38,11 @@ const READ_AFTER_DAYS = 3;
 type ActivityInsert = typeof activityLogs.$inferInsert;
 type NotificationInsert = typeof notifications.$inferInsert;
 
+// bcrypt is deliberately slow; hash the shared demo password once per process (tests re-seed often)
+let demoPasswordHash: Promise<string> | undefined;
+
 export async function seed(db: Db): Promise<string> {
-  const passwordHash = await hashPassword(DEMO_PASSWORD); // hashed once, shared by all demo users
+  const passwordHash = await (demoPasswordHash ??= hashPassword(DEMO_PASSWORD));
 
   return db.transaction(async (tx) => {
     await wipe(tx);
@@ -55,6 +58,7 @@ export async function seed(db: Db): Promise<string> {
       const [row] = await tx
         .insert(users)
         .values({
+          id: fixture.id,
           name: fixture.name,
           email: fixture.email,
           passwordHash,
@@ -125,6 +129,7 @@ export async function seed(db: Db): Promise<string> {
           status: archivedAt ? 'ARCHIVED' : 'ACTIVE',
           version: archivedAt ? 2 : 1,
           createdBy: userIds.admin,
+          updatedBy: userIds.admin,
           archivedAt,
           archivedBy: archivedAt ? userIds.admin : null,
           createdAt,

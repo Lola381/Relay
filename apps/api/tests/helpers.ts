@@ -38,6 +38,19 @@ export async function loginAs(who: DemoUser): Promise<LoggedIn> {
   return { token: res.body.data.accessToken, cookie: refreshCookieFrom(res.headers), user: res.body.data.user };
 }
 
+// Demo users have fixed ids, so an access token stays valid across re-seeds: log in once per file.
+const bearerCache = new Map<DemoUser, Promise<string>>();
+
+/** `Authorization` header value for a demo user (cached per test file). */
+export function bearer(who: DemoUser): Promise<string> {
+  let header = bearerCache.get(who);
+  if (!header) {
+    header = loginAs(who).then(({ token }) => `Bearer ${token}`);
+    bearerCache.set(who, header);
+  }
+  return header;
+}
+
 export function refreshCookieFrom(headers: Record<string, unknown>): string {
   const setCookie = ([] as string[]).concat((headers['set-cookie'] as string[] | string | undefined) ?? []);
   const cookie = setCookie.find((c) => c.startsWith('pm_refresh='));

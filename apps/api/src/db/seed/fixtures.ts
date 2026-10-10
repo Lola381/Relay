@@ -9,6 +9,8 @@ export type ProjectKey = 'website' | 'mobile' | 'crm';
 
 export interface UserFixture {
   key: UserKey;
+  /** Fixed ids: stable demo links, and test access tokens stay valid across re-seeds. */
+  id: string;
   name: string;
   email: string;
   role: SystemRole;
@@ -16,14 +18,15 @@ export interface UserFixture {
 }
 
 export const USERS: UserFixture[] = [
-  { key: 'admin', name: 'Neha Kapoor', email: 'admin@demo.com', role: 'ADMIN' },
-  { key: 'pm', name: 'Ravi Kumar', email: 'pm@demo.com', role: 'PROJECT_MANAGER' },
-  { key: 'alice', name: 'Alice Fernandes', email: 'alice@demo.com', role: 'TEAM_MEMBER' },
-  { key: 'bob', name: 'Bob Mathew', email: 'bob@demo.com', role: 'TEAM_MEMBER' },
-  { key: 'viewer', name: 'Vikram Rao', email: 'viewer@demo.com', role: 'VIEWER' },
+  { key: 'admin', id: '00000000-0000-4000-8000-000000000001', name: 'Neha Kapoor', email: 'admin@demo.com', role: 'ADMIN' },
+  { key: 'pm', id: '00000000-0000-4000-8000-000000000002', name: 'Ravi Kumar', email: 'pm@demo.com', role: 'PROJECT_MANAGER' },
+  { key: 'alice', id: '00000000-0000-4000-8000-000000000003', name: 'Alice Fernandes', email: 'alice@demo.com', role: 'TEAM_MEMBER' },
+  { key: 'bob', id: '00000000-0000-4000-8000-000000000004', name: 'Bob Mathew', email: 'bob@demo.com', role: 'TEAM_MEMBER' },
+  { key: 'viewer', id: '00000000-0000-4000-8000-000000000005', name: 'Vikram Rao', email: 'viewer@demo.com', role: 'VIEWER' },
   // Deactivated: shows the "deactivated user" badges and can't log in
   {
     key: 'ishaan',
+    id: '00000000-0000-4000-8000-000000000006',
     name: 'Ishaan Verma',
     email: 'inactive@demo.com',
     role: 'TEAM_MEMBER',

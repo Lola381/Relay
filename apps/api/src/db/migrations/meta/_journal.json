@@ -15,6 +15,13 @@
       "when": 1791613174022,
       "tag": "0001_assignee_member_fk",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1791615240003,
+      "tag": "0002_project_updated_by",
+      "breakpoints": true
     }
   ]
 }

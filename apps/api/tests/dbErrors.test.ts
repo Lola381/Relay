@@ -31,7 +31,7 @@ describe('mapDatabaseError', () => {
 
   it('second active project with the same name → 409 PROJECT_NAME_TAKEN', async () => {
     const admin = await userByEmail(DEMO.admin);
-    const err = await violation(() => db.insert(projects).values({ name: 'website revamp', createdBy: admin.id }));
+    const err = await violation(() => db.insert(projects).values({ name: 'website revamp', createdBy: admin.id, updatedBy: admin.id }));
     expect(mapDatabaseError(err)).toMatchObject({ status: 409, code: 'PROJECT_NAME_TAKEN' });
   });
 
