@@ -7,7 +7,7 @@ NeoStats Full Stack Hackathon submission. Multi-user project management with rol
 - **DB:** PostgreSQL 15+ with Drizzle ORM and SQL migrations
 - **Monorepo:** npm workspaces: `apps/web`, `apps/api`, and `packages/shared` (types, Zod schemas, and the permission rulebook used by both apps)
 
-Design docs: [API design](docs/API_DESIGN.md) · [Data model](docs/DATA_MODEL.md) · [UI requirements](docs/UI_REQUIREMENTS.md) · [Implementation plan](docs/IMPLEMENTATION_PLAN.md) · [Architecture note](docs/ARCHITECTURE.md) · [Demo guide](docs/DEMO_GUIDE.md)
+Design docs: [API reference (as built)](docs/API_REFERENCE.md) · [API design](docs/API_DESIGN.md) · [Data model](docs/DATA_MODEL.md) · [UI requirements](docs/UI_REQUIREMENTS.md) · [Implementation plan](docs/IMPLEMENTATION_PLAN.md) · [Architecture note](docs/ARCHITECTURE.md) · [Demo guide](docs/DEMO_GUIDE.md)
 
 ## Prerequisites
 - Node.js 22+

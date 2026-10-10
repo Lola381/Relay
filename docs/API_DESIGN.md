@@ -3,6 +3,8 @@
 REST API for all reads and writes, plus a server→client **Server-Sent Events (SSE)** stream for live updates.
 The API server owns authentication, authorization, validation, activity logging, notifications and real-time fan-out.
 
+> **Design document.** For exactly what is implemented, see [API_REFERENCE.md](API_REFERENCE.md). Not built from this design: `PATCH /me` and `PUT /me/password` (profile editing), and the aggregate `GET /dashboard`. The Start screen combines `/me/tasks`, `/projects` and `/notifications` instead.
+
 ---
 
 ## 1. Conventions
