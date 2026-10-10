@@ -16,6 +16,7 @@ import { roleLabel } from '@/lib/format';
 const BASE_NAV = [
   { href: '/dashboard', label: 'Dashboard' },
   { href: '/projects', label: 'Projects' },
+  { href: '/notifications', label: 'Notifications' },
 ];
 const ADMIN_NAV = [...BASE_NAV, { href: '/users', label: 'Users' }, { href: '/activity', label: 'Activity' }];
 

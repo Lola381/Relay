@@ -62,13 +62,17 @@ export function activityText(a: Pick<ActivityEntry, 'action' | 'metadata' | 'act
     case 'TASK_CREATED':
       return `${who} created ${task}`;
     case 'TASK_UPDATED':
-      return `${who} updated ${task}`;
+      return m.changes && typeof m.changes === 'object' && Object.keys(m.changes).length
+        ? `${who} changed the ${Object.keys(m.changes).join(', ')} of ${task}`
+        : `${who} updated ${task}`;
     case 'TASK_ASSIGNED':
       return `${who} assigned ${task} to ${person}`;
     case 'TASK_UNASSIGNED':
       return `${who} unassigned ${task}`;
     case 'TASK_STATUS_CHANGED':
-      return `${who} moved ${task} to ${statusLabel(m.to)}`;
+      return m.from
+        ? `${who} moved ${task} from ${statusLabel(m.from)} to ${statusLabel(m.to)}`
+        : `${who} moved ${task} to ${statusLabel(m.to)}`;
     case 'TASK_DELETED':
       return `${who} deleted ${task}`;
     case 'COMMENT_ADDED':

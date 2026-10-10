@@ -15,6 +15,7 @@ import {
   type TaskPriority,
 } from '@pm/shared';
 import { DeleteRegular } from '@/components/icons';
+import { ActivityFeed } from '@/components/features/activity/ActivityFeed';
 import { useProjectContext } from '@/components/features/projects/ProjectContext';
 import { SidePane } from '@/components/metro/SidePane';
 import { api, ApiError } from '@/lib/api/client';
@@ -282,6 +283,13 @@ function TaskDetail({ taskId, onClose }: { taskId: string; onClose: () => void }
           </form>
         )}
       </section>
+
+      <details className="border-t border-border-subtle pt-5">
+        <summary className="cursor-pointer text-2xl font-light">Task history</summary>
+        <div className="mt-4">
+          <ActivityFeed path={`/tasks/${taskId}/activity`} queryKey={['tasks', taskId, 'activity']} />
+        </div>
+      </details>
     </div>
   );
 }

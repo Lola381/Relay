@@ -78,6 +78,23 @@ describe('comments', () => {
   });
 });
 
+describe('task history', () => {
+  it("shows the task's own changes and its comments; outsiders get 404", async () => {
+    const task = await taskOf(DEMO.alice);
+    await api().patch(`${V1}/tasks/${task.id}/status`).set(await as('pm')).send({ version: task.version, status: 'IN_REVIEW' });
+    await api().post(`${V1}/tasks/${task.id}/comments`).set(await as('alice')).send({ body: 'ready' });
+    const res = await api().get(`${V1}/tasks/${task.id}/activity`).set(await as('viewer'));
+    expect(res.status).toBe(200);
+    const actions = res.body.data.map((a: { action: string }) => a.action);
+    expect(actions.slice(0, 2)).toEqual(['COMMENT_ADDED', 'TASK_STATUS_CHANGED']);
+    expect(res.body.data.every((a: { entityId: string; metadata: { taskId?: string } }) => a.entityId === task.id || a.metadata.taskId === task.id)).toBe(true);
+    expect((await api().get(`${V1}/tasks/${task.id}/activity`).set(await as('admin'))).status).toBe(200);
+    const mobile = await projectByName('Mobile App');
+    const [other] = await db.select().from(tasks).where(eq(tasks.projectId, mobile.id));
+    expect((await api().get(`${V1}/tasks/${other!.id}/activity`).set(await as('carol'))).status).toBe(404);
+  });
+});
+
 describe('notifications', () => {
   it('lists only my own, with an unread count; mark one and mark all read', async () => {
     const alice = await userByEmail(DEMO.alice);
@@ -94,6 +111,10 @@ describe('notifications', () => {
 
     // Someone else's notification answers 404
     expect((await api().post(`${V1}/notifications/${target.id}/read`).set(await as('bob'))).status).toBe(404);
+
+    // Toggle back to unread
+    expect((await api().post(`${V1}/notifications/${target.id}/unread`).set(await as('alice'))).status).toBe(204);
+    expect((await api().get(`${V1}/notifications`).set(await as('alice'))).body.unreadCount).toBe(unreadBefore);
 
     expect((await api().post(`${V1}/notifications/read-all`).set(await as('alice'))).status).toBe(204);
     expect((await api().get(`${V1}/notifications?unreadOnly=true`).set(await as('alice'))).body.data).toEqual([]);

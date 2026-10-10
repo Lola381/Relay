@@ -80,17 +80,17 @@ The login page also has one-click demo account buttons.
 - **Tasks:** CRUD, assign, change status; the board has optimistic moves with rollback.
 - **Optimistic locking:** a stale version gets **409** naming who changed it, and the UI offers *Use latest / Re-apply / Move anyway*.
 - **Activity log and notifications:** both are written in the same transaction as the change.
-- **Tests:** 265 API tests covering the whole permission matrix, auth, access, conflicts, members and projects.
+- **Tests:** 284 API tests covering the whole permission matrix, auth, access, conflicts, members and projects.
 
 - **Real-time (SSE):** `GET /events` with single-use ticket auth; boards, comments, activity, dashboard and the notification badge update live across browsers (a "Live" dot in the top bar shows the connection).
 - **Comments and @mentions:** task detail pane with comments; mentions notify the person.
-- **Notifications:** bell with unread badge, mark read / mark all read, links to the task.
+- **Notifications:** bell with unread badge, plus a full page (grouped by day, All/Unread, mark read/unread, mark all, load more); each links to its task.
+- **Task history** in the task pane; **404 and crash pages**.
 - **Activity feeds:** a per-project Activity tab, plus a system-wide feed for admins.
 - **Start dashboard:** Metro tiles for my tasks, projects and notifications (plus Users/Activity for admins).
 - **Users admin:** create users, change system roles (role-ceiling and last-admin guards), deactivate (revokes sessions) / reactivate.
 
 **Known gaps**
-- The new endpoints (comments, notifications, activity, users, events) were smoke-tested end to end but don't have dedicated Vitest suites yet.
 - No `Last-Event-ID` replay: a client that reconnects refetches its data instead.
 
 **Demo script:** open two browsers, pm@demo.com and alice@demo.com. As pm, open Website Revamp → Tasks, open a task assigned to Alice and post a comment that @mentions her: her bell, board and activity update instantly. Then have both edit the same task: the second save gets a 409 naming who changed it.

@@ -70,9 +70,9 @@ Content-Type: application/json
 | **Comments** | `GET /tasks/:id/comments` | Members |
 | | `POST /tasks/:id/comments` | Members (not viewers) |
 | | `DELETE /comments/:id` | The author, or a manager |
-| **Activity** | `GET /projects/:id/activity` | Members |
+| **Activity** | `GET /projects/:id/activity` · `GET /tasks/:id/activity` (task history, including its comments) | Members |
 | | `GET /activity` | Admin (whole system) |
-| **Notifications** | `GET /notifications` · `POST /notifications/:id/read` · `POST /notifications/read-all` | Your own only |
+| **Notifications** | `GET /notifications` · `POST /notifications/:id/read` · `POST /notifications/:id/unread` · `POST /notifications/read-all` | Your own only |
 | **Real-time** | `POST /events/ticket` → `{ data: { ticket } }` (single use, 30 seconds), then `GET /events?ticket=…` (`text/event-stream`) | Signed in |
 
 Real-time messages look like `data: {"type":"task.updated","projectId":"…","actorId":"…","data":{…}}`. The types are:

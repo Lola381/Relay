@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router, type Request, type Response } from 'express';
 import { and, desc, eq, isNull } from 'drizzle-orm';
 import { listNotificationsQuerySchema, uuidParamSchema, type Notification, type NotificationPage } from '@pm/shared';
 import { db } from '../../db/client';
@@ -59,15 +59,18 @@ notificationsRouter.post('/read-all', async (req, res) => {
   res.status(204).end();
 });
 
-notificationsRouter.post('/:id/read', async (req, res) => {
+/** POST /:id/read and /:id/unread (the per-item toggle). */
+const setRead = (read: boolean) => async (req: Request, res: Response) => {
   const user = currentUser(req);
   const { id } = parse(uuidParamSchema, req.params);
   const [row] = await db
     .update(notifications)
-    .set({ readAt: new Date() })
+    .set({ readAt: read ? new Date() : null })
     .where(and(eq(notifications.id, id), eq(notifications.recipientId, user.id)))
     .returning({ id: notifications.id });
   if (!row) throw notFound('Notification not found.');
   publishCommitted([{ type: 'notification.read', userIds: [user.id], data: { id } }]);
   res.status(204).end();
-});
+};
+notificationsRouter.post('/:id/read', setRead(true));
+notificationsRouter.post('/:id/unread', setRead(false));

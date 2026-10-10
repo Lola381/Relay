@@ -83,6 +83,11 @@ export function NotificationBell() {
               </li>
             ))}
           </ul>
+          <Popover.Close asChild>
+            <Link href="/notifications" className="block border-t border-border-subtle px-4 py-3 text-center text-accent-text hover:bg-border-subtle">
+              See all notifications
+            </Link>
+          </Popover.Close>
         </Popover.Content>
       </Popover.Portal>
     </Popover.Root>
