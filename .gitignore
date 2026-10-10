@@ -29,3 +29,6 @@ Thumbs.db
 # pre-hackathon readiness scaffolds (not part of the project)
 /api/
 /neostats-app/
+
+# Stitch design mockups (local reference only)
+/Screens/
