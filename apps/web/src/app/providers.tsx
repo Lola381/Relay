@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { Toaster } from 'sonner';
 import { ApiError } from '@/lib/api/client';
 import { AuthProvider } from '@/lib/auth/AuthProvider';
 
@@ -23,6 +24,17 @@ export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>{children}</AuthProvider>
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          unstyled: true,
+          classNames: {
+            toast: 'flex w-[360px] items-start gap-3 bg-appbar px-5 py-4 text-[15px] text-white shadow-xl',
+            error: 'bg-danger',
+            success: 'bg-accent',
+          },
+        }}
+      />
     </QueryClientProvider>
   );
 }

@@ -102,11 +102,94 @@ body {
   font-family: var(--font-sans);
 }
 
+/*
+ * Metro tile grid: one unit is 96px with 12px gutters (small 1×1, medium 2×2, wide 4×2,
+ * large 4×4). A group is 4 units wide (420px). On phones the unit shrinks so a group fills the
+ * screen width with 16px side gutters.
+ */
+:root {
+  --tile-gap: 12px;
+  --tile-unit: calc((100vw - 32px - 3 * var(--tile-gap)) / 4);
+}
+@media (min-width: 640px) {
+  :root {
+    --tile-unit: 96px;
+  }
+}
+
+/* 3D flip: the two faces share one grid cell; the back is pre-rotated. */
+.tile-flip {
+  perspective: 1200px;
+}
+.tile-flip-inner {
+  display: grid;
+  /* One cell exactly the tile's size: without minmax(0, 1fr) long text widens the cell, which
+     overflows phones and moves the flip's rotation axis off the tile */
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 360ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.tile-flip-inner > * {
+  grid-area: 1 / 1;
+  backface-visibility: hidden;
+}
+.tile-flip-inner > .tile-back {
+  transform: rotateY(180deg);
+}
+.tile-flip[data-flipped='true'] .tile-flip-inner {
+  transform: rotateY(180deg);
+}
+/* Reduced motion: crossfade instead of a 3D turn */
+@media (prefers-reduced-motion: reduce) {
+  .tile-flip-inner {
+    transition: none;
+  }
+  .tile-flip[data-flipped='true'] .tile-flip-inner {
+    transform: none;
+  }
+  .tile-flip-inner > .tile-back {
+    transform: none;
+    opacity: 0;
+    transition: opacity 150ms;
+  }
+  .tile-flip[data-flipped='true'] .tile-back {
+    opacity: 1;
+  }
+  .tile-flip[data-flipped='true'] .tile-front {
+    opacity: 0;
+  }
+}
+
 /* Metro: a visible focus ring on everything. In the base layer so utilities (e.g. inputs that use
    outline-none and show focus with a border colour instead) can override it. */
 @layer base {
   :focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 2px;
+  }
+}
+
+/* Side pane entrance (Metro slide-in from the right) */
+@keyframes pane-in {
+  from {
+    transform: translateX(48px);
+    opacity: 0;
+  }
+}
+
+/* Tile grids: 4 units (one group column), or 8 units on large screens (two wide tiles per row) */
+.tile-grid {
+  display: grid;
+  grid-template-columns: repeat(4, var(--tile-unit));
+  grid-auto-rows: var(--tile-unit);
+  grid-auto-flow: dense;
+  gap: var(--tile-gap);
+}
+@media (min-width: 1024px) {
+  .lg\:tile-grid-8 {
+    grid-template-columns: repeat(8, var(--tile-unit));
   }
 }
