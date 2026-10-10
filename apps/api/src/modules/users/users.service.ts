@@ -120,6 +120,7 @@ async function insertUser(
       entityId: row!.id,
       metadata: { userName: row!.name, role: row!.role, selfSignup: actorId === null },
     });
+    emit({ type: 'user.created', actorId: actorId ?? undefined, data: { id: row!.id } });
     return summary(row!);
   });
 }
@@ -186,7 +187,7 @@ export async function updateUser(
       entityId: userId,
       metadata: { userName: row!.name, role: row!.role, previousRole: target.role },
     });
-    emit({ type: 'user.updated', userIds: [userId], actorId: admin.id, data: summary(row!) });
+    emit({ type: 'user.updated', userIds: [userId], actorId: admin.id, data: { id: userId } });
     return summary(row!);
   });
 }

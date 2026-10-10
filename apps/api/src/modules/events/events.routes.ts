@@ -53,7 +53,10 @@ async function deliver(event: AppEvent) {
   const id = nextEventId++;
   for (const client of clients) {
     const isAdminProjectEvent = client.role === 'ADMIN' && (event.projectId || event.type.startsWith('project.'));
-    if (recipients.has(client.userId) || isAdminProjectEvent) send(client, event, id);
+    // Account changes refresh the people pickers (Admin + Project managers); the payload is only an id
+    const isDirectoryEvent =
+      event.type.startsWith('user.') && (client.role === 'ADMIN' || client.role === 'PROJECT_MANAGER');
+    if (recipients.has(client.userId) || isAdminProjectEvent || isDirectoryEvent) send(client, event, id);
   }
 }
 

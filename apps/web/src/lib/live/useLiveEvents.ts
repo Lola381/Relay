@@ -35,7 +35,9 @@ export function useLiveEvents(userId: string): LiveStatus {
         return;
       }
       if (scope === 'user') {
+        // New / changed accounts: the Users page, the people pickers, and team rosters
         void queryClient.invalidateQueries({ queryKey: ['users'] });
+        if (event.type === 'user.updated') void queryClient.invalidateQueries({ queryKey: ['projects'] });
         return;
       }
       // task.*, comment.*, member.*, project.*, activity.*
