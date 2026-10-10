@@ -34,4 +34,6 @@ export {
   TaskListLtrRegular,
   TextBulletListLtrRegular,
   WarningRegular,
+  WeatherMoonRegular,
+  WeatherSunnyRegular,
 } from '@fluentui/react-icons';

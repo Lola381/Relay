@@ -5,6 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { FullScreenStatus } from '@/components/metro/FullScreenStatus';
 import { TopBar } from '@/components/shell/TopBar';
 import { useAuth } from '@/lib/auth/AuthProvider';
+import { stepsBackIntoSession } from '@/lib/auth/historyGuard';
 import { useLiveEvents } from '@/lib/live/useLiveEvents';
 import type { AuthUser } from '@pm/shared';
 
@@ -16,6 +17,13 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   const { state, retry } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
+
+  // Back pressed past the sign-in point (into an earlier session's pages) → step forward again
+  useEffect(() => {
+    if (state.status !== 'authenticated') return;
+    const steps = stepsBackIntoSession();
+    if (steps > 0) window.history.go(steps);
+  }, [state.status, pathname]);
 
   useEffect(() => {
     if (state.status !== 'anonymous') return;

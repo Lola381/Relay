@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
@@ -32,6 +32,15 @@ type Conflict = { task: Task; wanted: TaskStatus; latest: Task; message: string 
 
 /** Task board: one column per status (UI_REQUIREMENTS §3.5). */
 export default function TaskBoardPage() {
+  // useSearchParams (?task=) needs a Suspense boundary
+  return (
+    <Suspense fallback={<SkeletonTiles count={4} />}>
+      <TaskBoard />
+    </Suspense>
+  );
+}
+
+function TaskBoard() {
   const project = useProjectContext();
   const user = useCurrentUser();
   const queryClient = useQueryClient();

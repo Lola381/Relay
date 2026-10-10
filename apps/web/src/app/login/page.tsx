@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
 import Link from 'next/link';
+import { ThemeToggle } from '@/components/shell/ThemeToggle';
 import { BoardRegular } from '@/components/icons';
 import { FlyingDots } from '@/components/metro/FlyingDots';
 import { LoginForm } from './LoginForm';
@@ -9,7 +10,8 @@ export const metadata: Metadata = { title: 'Sign in' };
 
 export default function LoginPage() {
   return (
-    <main className="grid min-h-screen md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
+    <main className="relative grid min-h-screen md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
+      <ThemeToggle className="absolute top-3 right-3 z-10" />
       {/* Brand panel (desktop) */}
       <section className="hidden flex-col justify-between bg-accent px-14 py-14 text-accent-fg md:sticky md:top-0 md:flex md:h-screen">
         <p className="text-3xl font-light">relay</p>

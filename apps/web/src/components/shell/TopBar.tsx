@@ -6,17 +6,25 @@ import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { ArrowLeftRegular, ChevronDownRegular, SignOutRegular } from '@/components/icons';
 import { Avatar } from '@/components/metro/Avatar';
 import { NotificationBell } from '@/components/shell/NotificationBell';
+import { ThemeToggle } from '@/components/shell/ThemeToggle';
 import type { LiveStatus } from '@/lib/live/useLiveEvents';
 import { useAuth, useCurrentUser } from '@/lib/auth/AuthProvider';
 import { roleLabel } from '@/lib/format';
 
 const BASE_NAV = [
-  { href: '/dashboard', label: 'Start' },
+  { href: '/dashboard', label: 'Dashboard' },
   { href: '/projects', label: 'Projects' },
 ];
 const ADMIN_NAV = [...BASE_NAV, { href: '/users', label: 'Users' }, { href: '/activity', label: 'Activity' }];
 
 const LIVE_LABEL: Record<LiveStatus, string> = { live: 'Live', connecting: 'Connecting…', offline: 'Offline' };
+
+/** Where the in-app back arrow goes: one level up, never out of the app or into another session. */
+function parentPath(pathname: string): string {
+  const project = pathname.match(/^\/projects\/([^/]+)(\/.+)?$/);
+  if (project) return project[2] ? `/projects/${project[1]}` : '/projects';
+  return '/dashboard';
+}
 
 /** Thin Metro top bar: back, brand, sections, and the user tile with its menu. */
 export function TopBar({ live }: { live: LiveStatus }) {
@@ -32,7 +40,7 @@ export function TopBar({ live }: { live: LiveStatus }) {
       {!isRoot && (
         <button
           type="button"
-          onClick={() => router.back()}
+          onClick={() => router.push(parentPath(pathname))}
           aria-label="Back"
           className="flex size-9 shrink-0 items-center justify-center rounded-full border-2 border-fg/70 hover:border-accent"
         >
@@ -64,6 +72,7 @@ export function TopBar({ live }: { live: LiveStatus }) {
         <span className={`size-2 rounded-full ${live === 'live' ? 'bg-tile-work' : live === 'offline' ? 'bg-tile-alert' : 'bg-muted'}`} />
         {LIVE_LABEL[live]}
       </span>
+      <ThemeToggle />
       <NotificationBell />
       <DropdownMenu.Root>
         <DropdownMenu.Trigger className="flex items-center gap-3 py-2">

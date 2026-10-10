@@ -2,6 +2,7 @@
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
+import { clearSessionStart, markSessionStart } from './historyGuard';
 import { ERROR_CODES, type ApiResponse, type AuthSession, type AuthUser, type LoginInput, type RegisterInput } from '@pm/shared';
 import {
   api,
@@ -50,6 +51,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(restore, [restore]);
 
+  // A page restored from the back/forward cache could show a previous session's screen: reload it
+  useEffect(() => {
+    const onPageShow = (event: PageTransitionEvent) => {
+      if (event.persisted) window.location.reload();
+    };
+    window.addEventListener('pageshow', onPageShow);
+    return () => window.removeEventListener('pageshow', onPageShow);
+  }, []);
+
   useEffect(() => {
     setSessionEndedHandler((reason) => {
       queryClient.clear(); // never show one user's cached data to the next
@@ -65,8 +75,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       auth: false,
     });
     setAccessToken(data.accessToken);
+    queryClient.clear(); // never show anything cached from a previous user
+    markSessionStart();
     setState({ status: 'authenticated', user: data.user });
-  }, []);
+  }, [queryClient]);
 
   const register = useCallback(async (input: RegisterInput) => {
     const { data } = await api<ApiResponse<AuthSession>>('/auth/register', {
@@ -75,8 +87,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       auth: false,
     });
     setAccessToken(data.accessToken);
+    queryClient.clear(); // never show anything cached from a previous user
+    markSessionStart();
     setState({ status: 'authenticated', user: data.user });
-  }, []);
+  }, [queryClient]);
 
   const logout = useCallback(async () => {
     try {
@@ -86,7 +100,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
     setAccessToken(null);
     queryClient.clear();
-    setState({ status: 'anonymous', reason: 'signed-out' });
+    clearSessionStart();
+    // Full page load: wipes everything held in memory, and replaces this history entry so
+    // Back doesn't return to the signed-in screen
+    window.location.replace('/login?reason=signed-out');
   }, [queryClient]);
 
   const retry = useCallback(() => {
