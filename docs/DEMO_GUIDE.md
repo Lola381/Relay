@@ -130,7 +130,7 @@ Talk through the output section by section. Red lines are rejected calls and the
 | The demo data is messy | `npm run db:reset`, then reload both windows |
 
 ## Backup: the automated proof
-`npm test` runs **265 API tests** against a separate test database. They cover:
+`npm test` runs **284 API tests** against a separate test database. They cover:
 - the full role × action permission matrix;
 - 401, 403 and 404 behaviour;
 - version conflicts;
