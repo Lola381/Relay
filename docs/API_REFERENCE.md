@@ -55,6 +55,8 @@ Content-Type: application/json
 |---|---|---|
 | **Health** | `GET /health` | Public |
 | **Auth** | `POST /auth/login` · `POST /auth/register` · `POST /auth/refresh` · `POST /auth/logout` · `GET /auth/me` | Public (`/me`: signed in) |
+| **Me** | `GET /me` · `PATCH /me` (name, avatar; never role or email) · `PUT /me/password` (checks the current one; signs out your other sessions) → 204 | Signed in |
+| **Dashboard** | `GET /dashboard`: one role-aware summary (my tasks by status and overdue, my projects with progress, unread count, recent activity; Admin also gets system-wide counts) | Signed in |
 | **Users** | `GET /users` | Admin, Project Manager (for the people pickers) |
 | | `POST /users` · `PATCH /users/:id` | Admin |
 | **Projects** | `GET /projects` · `GET /projects/:id` | Members (Admin sees all) |

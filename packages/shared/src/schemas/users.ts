@@ -33,3 +33,24 @@ export const listNotificationsQuerySchema = paginationQuerySchema.extend({
 export const listActivityQuerySchema = paginationQuerySchema.extend({
   pageSize: z.coerce.number().int().min(1).max(100).default(30),
 });
+
+/** PATCH /me: your own name and avatar (never your role or email). */
+export const updateProfileSchema = z
+  .strictObject({
+    name: name.optional(),
+    avatarUrl: z
+      .union([z.url({ error: 'Enter a valid image URL.' }).max(2000), z.literal('')])
+      .nullable()
+      .optional()
+      .transform((v) => (v === '' ? null : v)),
+  })
+  .refine((v) => v.name !== undefined || v.avatarUrl !== undefined, { error: 'Nothing to update.' });
+
+/** PUT /me/password */
+export const changePasswordSchema = z.strictObject({
+  currentPassword: z.string().min(1, { error: 'Enter your current password.' }).max(200),
+  newPassword: z
+    .string()
+    .min(8, { error: 'Password must be at least 8 characters.' })
+    .max(128, { error: 'Password is too long.' }),
+});

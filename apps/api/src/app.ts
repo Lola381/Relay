@@ -16,6 +16,7 @@ import { commentsRouter } from './modules/comments/comments.routes';
 import { notificationsRouter } from './modules/notifications/notifications.routes';
 import { activityRouter } from './modules/activity/activity.routes';
 import { eventsRouter } from './modules/events/events.routes';
+import { meRouter } from './modules/me/me.routes';
 
 export function createApp() {
   const app = express();
@@ -50,6 +51,7 @@ export function createApp() {
   api.use('/users', usersRouter);
   api.use('/events', eventsRouter);
   api.use('/notifications', notificationsRouter);
+  api.use('/', meRouter);
   api.use('/', tasksRouter);
   api.use('/', commentsRouter);
   api.use('/', activityRouter);

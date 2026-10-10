@@ -9,7 +9,7 @@ import { authenticate, currentUser } from '../../middleware/authenticate';
 import { pageMeta, toLimitOffset } from '../../lib/pagination';
 import { parse } from '../../lib/validation';
 
-async function feed(
+export async function feed(
   where: SQL | undefined,
   query: { page: number; pageSize: number },
 ): Promise<Paginated<ActivityEntry>> {

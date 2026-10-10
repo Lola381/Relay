@@ -25,6 +25,8 @@ interface AuthContextValue {
   state: AuthState;
   login: (input: LoginInput) => Promise<void>;
   register: (input: RegisterInput) => Promise<void>;
+  /** After the user edits their own profile. */
+  updateUser: (user: AuthUser) => void;
   logout: () => Promise<void>;
   retry: () => void;
 }
@@ -106,12 +108,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     window.location.replace('/login?reason=signed-out');
   }, [queryClient]);
 
+  const updateUser = useCallback((user: AuthUser) => setState({ status: 'authenticated', user }), []);
+
   const retry = useCallback(() => {
     setState({ status: 'loading' });
     restore();
   }, [restore]);
 
-  const value = useMemo(() => ({ state, login, register, logout, retry }), [state, login, register, logout, retry]);
+  const value = useMemo(
+    () => ({ state, login, register, updateUser, logout, retry }),
+    [state, login, register, updateUser, logout, retry],
+  );
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 

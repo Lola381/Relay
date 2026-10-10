@@ -3,10 +3,12 @@
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
-import { ArrowLeftRegular, ChevronDownRegular, SignOutRegular } from '@/components/icons';
+import { ArrowLeftRegular, ChevronDownRegular, PersonRegular, SignOutRegular } from '@/components/icons';
 import { Avatar } from '@/components/metro/Avatar';
 import { NotificationBell } from '@/components/shell/NotificationBell';
 import { ThemeToggle } from '@/components/shell/ThemeToggle';
+import { ProfilePane } from '@/components/shell/ProfilePane';
+import { useState } from 'react';
 import type { LiveStatus } from '@/lib/live/useLiveEvents';
 import { useAuth, useCurrentUser } from '@/lib/auth/AuthProvider';
 import { roleLabel } from '@/lib/format';
@@ -34,6 +36,7 @@ export function TopBar({ live }: { live: LiveStatus }) {
   const pathname = usePathname();
   const router = useRouter();
   const isRoot = pathname === '/dashboard';
+  const [profileOpen, setProfileOpen] = useState(false);
 
   return (
     <header className="flex h-16 items-center gap-4 px-4 sm:gap-6 sm:px-16">
@@ -106,6 +109,13 @@ export function TopBar({ live }: { live: LiveStatus }) {
               <DropdownMenu.Separator className="my-2 h-px bg-border-subtle" />
             </div>
             <DropdownMenu.Item
+              onSelect={() => setProfileOpen(true)}
+              className="flex cursor-pointer items-center gap-3 px-4 py-2.5 outline-none data-highlighted:bg-border-subtle"
+            >
+              <PersonRegular aria-hidden fontSize={18} />
+              Profile & password
+            </DropdownMenu.Item>
+            <DropdownMenu.Item
               onSelect={() => void logout()}
               className="flex cursor-pointer items-center gap-3 px-4 py-2.5 outline-none data-highlighted:bg-border-subtle"
             >
@@ -115,6 +125,7 @@ export function TopBar({ live }: { live: LiveStatus }) {
           </DropdownMenu.Content>
         </DropdownMenu.Portal>
       </DropdownMenu.Root>
+      <ProfilePane open={profileOpen} onOpenChange={setProfileOpen} />
     </header>
   );
 }

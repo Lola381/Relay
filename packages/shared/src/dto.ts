@@ -174,3 +174,13 @@ export interface LiveEvent {
   actorId?: string;
   data: unknown;
 }
+
+/** GET /dashboard: one role-aware summary for the Start screen. */
+export interface DashboardSummary {
+  myTasks: { open: number; overdue: number; byStatus: Record<TaskStatus, number> };
+  projects: { id: string; name: string; status: ProjectStatus; myRole: ProjectRole | 'ADMIN'; taskCount: number; doneCount: number }[];
+  unreadNotifications: number;
+  recentActivity: ActivityEntry[];
+  /** Admin only: system-wide counts. */
+  system?: { users: number; activeUsers: number; projects: number; activeProjects: number; tasks: number };
+}
