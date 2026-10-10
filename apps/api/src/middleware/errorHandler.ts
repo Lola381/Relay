@@ -1,6 +1,8 @@
 import type { ErrorRequestHandler, RequestHandler } from 'express';
 import { ERROR_CODES, type ApiErrorBody } from '@pm/shared';
+import { mapDatabaseError } from '../lib/dbErrors';
 import { AppError } from '../lib/errors';
+import { logger } from '../lib/logger';
 
 /** Unknown routes → 404 in the standard error shape. */
 export const notFoundHandler: RequestHandler = (req, res) => {
@@ -25,9 +27,11 @@ export const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
     error: { code: ERROR_CODES.INTERNAL_ERROR, message: 'Something went wrong. Please try again.' },
   };
 
-  if (err instanceof AppError) {
-    status = err.status;
-    body = { error: { code: err.code, message: err.message, details: err.details } };
+  const known = err instanceof AppError ? err : mapDatabaseError(err);
+
+  if (known) {
+    status = known.status;
+    body = { error: { code: known.code, message: known.message, details: known.details } };
   } else if (isBodyParserError(err) && err.type === 'entity.parse.failed') {
     status = 400;
     body = { error: { code: ERROR_CODES.INVALID_JSON, message: 'Request body is not valid JSON.' } };
@@ -37,7 +41,8 @@ export const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
   }
 
   // Unexpected errors are logged with the request id; internals never reach the client.
-  if (status >= 500) req.log.error({ err }, 'Unhandled error');
+  // req.log exists when pino-http ran; the error handler must work even if it didn't
+  if (status >= 500) (req.log ?? logger).error({ err }, 'Unhandled error');
 
   res.status(status).json(body);
 };

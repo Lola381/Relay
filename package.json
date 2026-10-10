@@ -23,7 +23,8 @@
     "db:migrate": "npm run db:migrate -w @pm/api",
     "db:seed": "npm run db:seed -w @pm/api",
     "db:reset": "npm run db:reset -w @pm/api",
-    "db:studio": "npm run db:studio -w @pm/api"
+    "db:studio": "npm run db:studio -w @pm/api",
+    "test": "npm run test -w @pm/api"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

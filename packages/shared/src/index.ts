@@ -4,3 +4,4 @@ export * from './dto';
 export * from './schemas/common';
 export * from './schemas/auth';
 export * from './mentions';
+export * from './permissions';

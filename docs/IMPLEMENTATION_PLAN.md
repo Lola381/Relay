@@ -30,7 +30,7 @@ Goal: choose tools that **cover every requirement with the least friction** (no 
 | Icons | **@fluentui/react-icons** | Microsoft's own glyph set, so it matches the Metro language |
 | Toasts | **sonner**, restyled to Metro | Handles stacking and timers |
 | Dates | `date-fns` | Relative times, "due this week", overdue |
-| Tests | **Vitest** + **Supertest** (API, against a real Postgres test DB). Optional **Playwright** for the two-browser real-time demo | Tests that run against real DB constraints catch more than mocks |
+| Tests | **Vitest 5** + **Supertest** (API, against a real Postgres test DB). Optional **Playwright** for the two-browser real-time demo | Tests that run against real DB constraints catch more than mocks. `rolldown` is a direct dev dependency of the API only to work around an npm bug that drops the native bindings of peer-only packages |
 | Dev runner | `tsx watch` (API), `next dev` (web), **`concurrently`** at the root | `npm run dev` starts everything |
 | Quality | ESLint + Prettier, `tsc --noEmit` in the `check` script | |
 
